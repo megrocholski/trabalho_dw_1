@@ -1,5 +1,6 @@
 package dw.trabalho01.control;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dw.trabalho01.model.Jogador;
@@ -34,7 +36,37 @@ public class PagamentoController {
 		try {
 			List<Pagamento> lj = new ArrayList<Pagamento>();
 
+			// if (jogador == null) {
 			rep.findAll().forEach(lj::add);
+			// } else {
+			// Optional<Jogador> jg = jRepository.findById(jogador);
+			// if (jg.isPresent()) {
+			// Jogador jog = new Jogador(jg.get().getNome(), jg.get().getEmail(),
+			// jg.get().getDataNasc());
+			// rep.findPagamentosByJogador(jog).forEach(lj::add);
+			// }
+			// }
+
+			if (lj.isEmpty()) {
+				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+			}
+
+			return new ResponseEntity<>(lj, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping("/pagamento/jogador/{id}")
+	public ResponseEntity<List<Pagamento>> getPagamentosByJogador(@PathVariable("id") long id) {
+		try {
+			List<Pagamento> lj = new ArrayList<Pagamento>();
+
+			Optional<Jogador> jg = jRepository.findById(id);
+			if (jg.isPresent()) {
+				Jogador jog = new Jogador(jg.get().getNome(), jg.get().getEmail(), jg.get().getDataNasc());
+				rep.findPagamentosByJogador(id).forEach(lj::add);
+			}
 
 			if (lj.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -55,8 +87,12 @@ public class PagamentoController {
 			Optional<Jogador> data = jRepository.findById(id);
 			if (data.isPresent()) {
 				Jogador jg = data.get();
-				Pagamento p = rep.save(new Pagamento(pg.getAno(), pg.getMes(), pg.getValor(), jg));
-				return new ResponseEntity<>(p, HttpStatus.CREATED);
+				if (pg.getAno() > 0 && pg.getMes() > 0 && pg.getMes() <= 12 && pg.getValor() > 0) {
+					Pagamento p = rep.save(new Pagamento(pg.getAno(), pg.getMes(), pg.getValor(), jg));
+
+					return new ResponseEntity<>(p, HttpStatus.CREATED);
+				}
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
@@ -64,6 +100,19 @@ public class PagamentoController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	// @GetMapping("/jogador/{id}")
+	// public ResponseEntity<List<Pagamento>>
+	// getPagamentosByJogador(@PathVariable("id") long id){
+	// Optional<Jogador> jogador = jRepository.findById(id);
+
+	// if(jogador.isPresent()){
+	// List<Pagamento> list = rep.findAll().forEach(id);
+	// return new ResponseEntity<>(data.get(), HttpStatus.OK);
+	// }else{
+	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	// }
+	// }
 
 	@GetMapping("/pagamento/{id}")
 	public ResponseEntity<Pagamento> getPagamentoById(@PathVariable("id") long id) {
@@ -76,20 +125,32 @@ public class PagamentoController {
 		}
 	}
 
-	@PutMapping("/pagamento/{id}")
-	public ResponseEntity<Pagamento> updatePagamento(@PathVariable("id") long id, @RequestBody Pagamento pg) {
-		System.out.println("Alterar");
+	@PutMapping("/pagamento/{id}/{id_jogador}")
+	public ResponseEntity<Pagamento> updatePagamento(@PathVariable("id") long id, @RequestBody Pagamento pg,
+			@PathVariable("id_jogador") long id_jogador) {
 
 		Optional<Pagamento> data = rep.findById(id);
 
 		if (data.isPresent()) {
-			Pagamento p = data.get();
-			p.setAno(pg.getAno());
-			p.setMes(pg.getMes());
-			p.setValor(pg.getValor());
-			// p.setJogador(pg.getJogador());
+			Optional<Jogador> data2 = jRepository.findById(id_jogador);
 
-			return new ResponseEntity<>(rep.save(p), HttpStatus.OK);
+			if (data2.isPresent()) {
+				Pagamento p = data.get();
+				if (pg.getAno() > 0) {
+					p.setAno(pg.getAno());
+				}
+				if (pg.getMes() > 0 && pg.getMes() <= 12) {
+					p.setMes(pg.getMes());
+				}
+				if (pg.getValor() > 0) {
+					p.setValor(pg.getValor());
+				}
+				p.setJogador(data2.get());
+
+				return new ResponseEntity<>(rep.save(p), HttpStatus.OK);
+			} else {
+				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			}
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}

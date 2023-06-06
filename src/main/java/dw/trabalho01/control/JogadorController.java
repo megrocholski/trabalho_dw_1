@@ -53,44 +53,46 @@ public class JogadorController {
 	@PostMapping("/jogador")
 	public ResponseEntity<Jogador> createJogador(@RequestBody Jogador jo) {
 		try {
-			Jogador j = rep.save(new Jogador(jo.getNome(), jo.getEmail(), jo.getDataNasc()));
-
-			return new ResponseEntity<>(j, HttpStatus.CREATED);
+			if (jo.getNome() != "" && jo.getEmail() != "" && jo.getDataNasc() != null) {
+				Jogador j = rep.save(new Jogador(jo.getNome(), jo.getEmail(), jo.getDataNasc()));
+				return new ResponseEntity<>(j, HttpStatus.CREATED);
+			}
+			return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	// @PostMapping("/jogador/pagamento/{id}")
-	// public ResponseEntity<Jogador> createPagamentoJogador(@PathVariable("id") long id, @RequestBody Pagamento pg) {
-	// 	try {
-	// 		Optional<Jogador> data = rep.findById(id);
-	// 		Jogador j = new Jogador();
+	// public ResponseEntity<Jogador> createPagamentoJogador(@PathVariable("id")
+	// long id, @RequestBody Pagamento pg) {
+	// try {
+	// Optional<Jogador> data = rep.findById(id);
+	// Jogador j = new Jogador();
 
-	// 		if (data.isPresent()) {
-	// 			PagamentoController pgController = new PagamentoController();
+	// if (data.isPresent()) {
+	// PagamentoController pgController = new PagamentoController();
 
-	// 			ResponseEntity<Pagamento> p = pgController.createPagamento(pg);
-				
-	// 			Pagamento pa = p.getBody();
+	// ResponseEntity<Pagamento> p = pgController.createPagamento(pg);
 
-	// 			j = data.get();
-	// 			// List<Pagamento> pgs = new ArrayList<Pagamento>();
-	// 			// while(j.getPagamentos().){
+	// Pagamento pa = p.getBody();
 
-	// 			// }
-	// 			// pgs.add(pg);
-	// 			// j.setPagamentos(pgs);
-	// 			j.getPagamentos().add(pa);
+	// j = data.get();
+	// // List<Pagamento> pgs = new ArrayList<Pagamento>();
+	// // while(j.getPagamentos().){
 
-				
-	// 		} else {
-	// 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	// 		}
-	// 		return new ResponseEntity<>(j, HttpStatus.CREATED);
-	// 	} catch (Exception e) {
-	// 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	// 	}
+	// // }
+	// // pgs.add(pg);
+	// // j.setPagamentos(pgs);
+	// j.getPagamentos().add(pa);
+
+	// } else {
+	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	// }
+	// return new ResponseEntity<>(j, HttpStatus.CREATED);
+	// } catch (Exception e) {
+	// return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	// }
 	// }
 
 	@GetMapping("/jogador/{id}")
@@ -106,15 +108,20 @@ public class JogadorController {
 
 	@PutMapping("/jogador/{id}")
 	public ResponseEntity<Jogador> updateJogador(@PathVariable("id") long id, @RequestBody Jogador jo) {
-		System.out.println("Alterar");
 
 		Optional<Jogador> data = rep.findById(id);
 
 		if (data.isPresent()) {
 			Jogador j = data.get();
-			j.setNome(jo.getNome());
-			j.setEmail(jo.getEmail());
-			j.setDataNasc(jo.getDataNasc());
+			if (jo.getNome() != "") {
+				j.setNome(jo.getNome());
+			}
+			if (jo.getEmail() != "") {
+				j.setEmail(jo.getEmail());
+			}
+			if (jo.getDataNasc() != null) {
+				j.setDataNasc(jo.getDataNasc());
+			}
 
 			return new ResponseEntity<>(rep.save(j), HttpStatus.OK);
 		} else {

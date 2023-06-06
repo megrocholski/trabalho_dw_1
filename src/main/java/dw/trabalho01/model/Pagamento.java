@@ -27,7 +27,7 @@ public class Pagamento {
 	private double valor;
 
 	@ManyToOne
-	// @JoinColumn(name = "")
+	@JoinColumn(name = "cod_jogador")
 	private Jogador jogador;
 
 	public Pagamento() {
@@ -41,6 +41,9 @@ public class Pagamento {
 		this.jogador = jogador;
 	}
 
+	public long getCod_Pagamento() {
+		return cod_pagamento;
+	}
 	public short getAno() {
 		return ano;
 	}

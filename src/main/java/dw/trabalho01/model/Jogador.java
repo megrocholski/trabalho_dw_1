@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -29,7 +30,7 @@ public class Jogador {
 	@Column
 	private Date dataNasc;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "jogador")
 	List<Pagamento> pagamentos;
 
 	public Jogador(){}
@@ -40,6 +41,9 @@ public class Jogador {
 		this.dataNasc = dataNasc;
 	}
 
+	public long getCod_Jogador() {
+		return cod_jogador;
+	}
 	public String getNome() {
 		return nome;
 	}
@@ -61,11 +65,11 @@ public class Jogador {
 	public void setDataNasc(Date dataNasc){
 		this.dataNasc = dataNasc;
 	}
-	public List<Pagamento> getPagamentos() {
-		return pagamentos;
-	}
+	// public List<Pagamento> getPagamentos() {
+	// 	return pagamentos;
+	// }
 
-	public void setPagamentos(List<Pagamento> pagamentos){
-		this.pagamentos = pagamentos;
-	}
+	// public void setPagamentos(List<Pagamento> pagamentos){
+	// 	this.pagamentos = pagamentos;
+	// }
 }

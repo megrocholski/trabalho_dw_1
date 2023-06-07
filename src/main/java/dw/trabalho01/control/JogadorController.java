@@ -29,6 +29,7 @@ public class JogadorController {
 	@Autowired
 	JogadorRepository rep;
 
+	// rota para buscar todos os jogadores
 	@GetMapping("/jogador")
 	public ResponseEntity<List<Jogador>> getAllJogadores(@RequestParam(required = false) String nome) {
 		try {
@@ -50,6 +51,7 @@ public class JogadorController {
 		}
 	}
 
+	// rota para criar um jogador
 	@PostMapping("/jogador")
 	public ResponseEntity<Jogador> createJogador(@RequestBody Jogador jo) {
 		try {
@@ -63,38 +65,7 @@ public class JogadorController {
 		}
 	}
 
-	// @PostMapping("/jogador/pagamento/{id}")
-	// public ResponseEntity<Jogador> createPagamentoJogador(@PathVariable("id")
-	// long id, @RequestBody Pagamento pg) {
-	// try {
-	// Optional<Jogador> data = rep.findById(id);
-	// Jogador j = new Jogador();
-
-	// if (data.isPresent()) {
-	// PagamentoController pgController = new PagamentoController();
-
-	// ResponseEntity<Pagamento> p = pgController.createPagamento(pg);
-
-	// Pagamento pa = p.getBody();
-
-	// j = data.get();
-	// // List<Pagamento> pgs = new ArrayList<Pagamento>();
-	// // while(j.getPagamentos().){
-
-	// // }
-	// // pgs.add(pg);
-	// // j.setPagamentos(pgs);
-	// j.getPagamentos().add(pa);
-
-	// } else {
-	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	// }
-	// return new ResponseEntity<>(j, HttpStatus.CREATED);
-	// } catch (Exception e) {
-	// return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	// }
-	// }
-
+	// rota para buscar um jogador pelo id
 	@GetMapping("/jogador/{id}")
 	public ResponseEntity<Jogador> getJogadorById(@PathVariable("id") long id) {
 		Optional<Jogador> data = rep.findById(id);
@@ -106,6 +77,7 @@ public class JogadorController {
 		}
 	}
 
+	// rota para atualizar os dados de um jogador
 	@PutMapping("/jogador/{id}")
 	public ResponseEntity<Jogador> updateJogador(@PathVariable("id") long id, @RequestBody Jogador jo) {
 
@@ -130,6 +102,7 @@ public class JogadorController {
 
 	}
 
+	//rota para deletar um jogador de acordo com seu id
 	@DeleteMapping("/jogador/{id}")
 	public ResponseEntity<HttpStatus> deleteJogador(@PathVariable("id") long id) {
 		try {
@@ -140,6 +113,7 @@ public class JogadorController {
 		}
 	}
 
+	//rota para deletar todos os jogadores
 	@DeleteMapping("/jogador")
 	public ResponseEntity<HttpStatus> deleteAllJogador() {
 		try {

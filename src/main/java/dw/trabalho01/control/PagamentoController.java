@@ -31,6 +31,7 @@ public class PagamentoController {
 	@Autowired
 	JogadorRepository jRepository;
 
+	// rota para buscar todos os pagamentos
 	@GetMapping("/pagamento")
 	public ResponseEntity<List<Pagamento>> getAllPagamentos() {
 		try {
@@ -57,6 +58,7 @@ public class PagamentoController {
 		}
 	}
 
+	// rota para buscar pagamentos de um determinado jogador
 	@GetMapping("/pagamento/jogador/{id}")
 	public ResponseEntity<List<Pagamento>> getPagamentosByJogador(@PathVariable("id") long id) {
 		try {
@@ -78,6 +80,7 @@ public class PagamentoController {
 		}
 	}
 
+	// rota para criar um novo pagamento
 	@PostMapping("/pagamento/{id}")
 	public ResponseEntity<Pagamento> createPagamento(@PathVariable("id") long id, @RequestBody Pagamento pg) {
 		try {
@@ -101,19 +104,7 @@ public class PagamentoController {
 		}
 	}
 
-	// @GetMapping("/jogador/{id}")
-	// public ResponseEntity<List<Pagamento>>
-	// getPagamentosByJogador(@PathVariable("id") long id){
-	// Optional<Jogador> jogador = jRepository.findById(id);
-
-	// if(jogador.isPresent()){
-	// List<Pagamento> list = rep.findAll().forEach(id);
-	// return new ResponseEntity<>(data.get(), HttpStatus.OK);
-	// }else{
-	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-	// }
-	// }
-
+	// rota para buscar pagamento de acordo com o id
 	@GetMapping("/pagamento/{id}")
 	public ResponseEntity<Pagamento> getPagamentoById(@PathVariable("id") long id) {
 		Optional<Pagamento> data = rep.findById(id);
@@ -125,6 +116,7 @@ public class PagamentoController {
 		}
 	}
 
+	// rota para atualizar dados de um pagamento
 	@PutMapping("/pagamento/{id}/{id_jogador}")
 	public ResponseEntity<Pagamento> updatePagamento(@PathVariable("id") long id, @RequestBody Pagamento pg,
 			@PathVariable("id_jogador") long id_jogador) {
@@ -157,6 +149,7 @@ public class PagamentoController {
 
 	}
 
+	// rota para deletar um pagamento de acordo com o id
 	@DeleteMapping("pagamento/{id}")
 	public ResponseEntity<HttpStatus> deletePagamento(@PathVariable("id") long id) {
 		try {
@@ -167,6 +160,7 @@ public class PagamentoController {
 		}
 	}
 
+	// rota para deletar todos os pagamentos
 	@DeleteMapping("/pagamento")
 	public ResponseEntity<HttpStatus> deleteAllPagamento() {
 		try {
